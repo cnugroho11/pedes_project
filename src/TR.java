@@ -15,13 +15,12 @@ import javax.swing.table.DefaultTableModel;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author ASUS
  */
 public class TR extends javax.swing.JFrame {
-    
+
     public Statement st;
     public ResultSet rs;
     public DefaultTableModel tabModel;
@@ -34,26 +33,24 @@ public class TR extends javax.swing.JFrame {
         initComponents();
         judul();
         tampilData("");
-        
-        
     }
 
-    public void judul(){
+    public void judul() {
         Object[] judul = {
             "Nama", "NIM", "Progdi", "Hari", "Waktu", "Pengajar"
         };
         tabModel = new DefaultTableModel(null, judul);
         tblPeserta.setModel(tabModel);
     }
-    
-    public void tampilData(String where){
-        try{
+
+    public void tampilData(String where) {
+        try {
             st = cn.createStatement();
             tabModel.getDataVector().removeAllElements();
             tabModel.fireTableDataChanged();
-            rs = st.executeQuery("SELECT * FROM peserta "+where);
-            
-            while(rs.next()){
+            rs = st.executeQuery("SELECT * FROM peserta " + where);
+
+            while (rs.next()) {
                 Object[] data = {
                     rs.getString("Nama"),
                     rs.getString("NIM"),
@@ -64,12 +61,11 @@ public class TR extends javax.swing.JFrame {
                 };
                 tabModel.addRow(data);
             }
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -136,6 +132,11 @@ public class TR extends javax.swing.JFrame {
         cbHari.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pilih Hari", "Senin", "Rabu", "Jumat" }));
 
         btnSubmit.setText("Submit");
+        btnSubmit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSubmitActionPerformed(evt);
+            }
+        });
 
         btnEdit.setText("Edit");
 
@@ -151,8 +152,27 @@ public class TR extends javax.swing.JFrame {
             new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblPeserta.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblPesertaMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tblPeserta);
+        if (tblPeserta.getColumnModel().getColumnCount() > 0) {
+            tblPeserta.getColumnModel().getColumn(0).setResizable(false);
+            tblPeserta.getColumnModel().getColumn(1).setResizable(false);
+            tblPeserta.getColumnModel().getColumn(2).setResizable(false);
+            tblPeserta.getColumnModel().getColumn(3).setResizable(false);
+        }
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -182,18 +202,19 @@ public class TR extends javax.swing.JFrame {
                                 .addComponent(jLabel8)
                                 .addGap(56, 56, 56)
                                 .addComponent(txtProgdi, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(71, 71, 71)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(35, 35, 35)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel10)
                                 .addGap(18, 18, 18)
                                 .addComponent(cbHari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(btnSubmit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
-                        .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(33, 33, 33)
-                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(50, 50, 50))))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(50, 120, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -207,8 +228,8 @@ public class TR extends javax.swing.JFrame {
                     .addComponent(cbHari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(txtNIM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNIM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
@@ -240,6 +261,48 @@ public class TR extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
+        if (txtNama.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Anda Belum Memasukan Data!");
+        } 
+        else {
+            String tes = cbHari.getSelectedItem().toString();
+            String pengajar, waktu;
+            if (tes.equals("Senin")) {
+                pengajar = "Fian";
+                waktu = "12 - 14";
+            } else if (tes.equals("Rabu")) {
+                pengajar = "Cahyo";
+                waktu = "16 - 18";
+            } else {
+                pengajar = "Anggi";
+                waktu = "12 - 14";
+            }
+
+            try {
+                st = cn.createStatement();
+                st.executeUpdate("INSERT INTO peserta VALUES('" + txtNama.getText() + "','"
+                        + txtNIM.getText() + "','"
+                        + txtProgdi.getText() + "','"
+                        + cbHari.getSelectedItem() + "','"
+                        + waktu + "','"
+                        + pengajar + "')");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            tampilData("");
+            JOptionPane.showMessageDialog(null, "Simpan berhasil");
+            txtNIM.setText("");
+            txtNama.setText("");
+            txtProgdi.setText("");
+            cbHari.setSelectedItem("Pilih Hari");
+        }
+    }//GEN-LAST:event_btnSubmitActionPerformed
+
+    private void tblPesertaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPesertaMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tblPesertaMouseClicked
 
     /**
      * @param args the command line arguments
