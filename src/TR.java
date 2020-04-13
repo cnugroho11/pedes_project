@@ -301,7 +301,7 @@ public class TR extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSubmitActionPerformed
 
     private void tblPesertaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPesertaMouseClicked
-        // TODO add your handling code here:
+        txtNama.setText(tblPeserta.getValueAt(tblPeserta.getSelectedRow(), 0).toString());
     }//GEN-LAST:event_tblPesertaMouseClicked
 
     /**
