@@ -33,6 +33,7 @@ public class TR extends javax.swing.JFrame {
         initComponents();
         judul();
         tampilData("");
+        btnEdit.setEnabled(false);
     }
 
     public void judul() {
@@ -48,7 +49,7 @@ public class TR extends javax.swing.JFrame {
             st = cn.createStatement();
             tabModel.getDataVector().removeAllElements();
             tabModel.fireTableDataChanged();
-            rs = st.executeQuery("SELECT * FROM peserta " + where);
+            rs = st.executeQuery("SELECT * FROM user " + where);
 
             while (rs.next()) {
                 Object[] data = {
@@ -64,6 +65,13 @@ public class TR extends javax.swing.JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void reset() {
+        txtNIM.setText("");
+        txtNama.setText("");
+        txtProgdi.setText("");
+        cbHari.setSelectedItem("Pilih Hari");
     }
 
     /**
@@ -139,6 +147,11 @@ public class TR extends javax.swing.JFrame {
         });
 
         btnEdit.setText("Edit");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
 
         btnDelete.setText("Delete");
 
@@ -265,8 +278,7 @@ public class TR extends javax.swing.JFrame {
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
         if (txtNama.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Anda Belum Memasukan Data!");
-        } 
-        else {
+        } else {
             String tes = cbHari.getSelectedItem().toString();
             String pengajar, waktu;
             if (tes.equals("Senin")) {
@@ -282,7 +294,7 @@ public class TR extends javax.swing.JFrame {
 
             try {
                 st = cn.createStatement();
-                st.executeUpdate("INSERT INTO peserta VALUES('" + txtNama.getText() + "','"
+                st.executeUpdate("INSERT INTO user VALUES('" + txtNama.getText() + "','"
                         + txtNIM.getText() + "','"
                         + txtProgdi.getText() + "','"
                         + cbHari.getSelectedItem() + "','"
@@ -293,16 +305,54 @@ public class TR extends javax.swing.JFrame {
             }
             tampilData("");
             JOptionPane.showMessageDialog(null, "Simpan berhasil");
-            txtNIM.setText("");
-            txtNama.setText("");
-            txtProgdi.setText("");
-            cbHari.setSelectedItem("Pilih Hari");
+            reset();
         }
     }//GEN-LAST:event_btnSubmitActionPerformed
 
     private void tblPesertaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPesertaMouseClicked
         txtNama.setText(tblPeserta.getValueAt(tblPeserta.getSelectedRow(), 0).toString());
+        txtNIM.setText(tblPeserta.getValueAt(tblPeserta.getSelectedRow(), 1).toString());
+        txtProgdi.setText(tblPeserta.getValueAt(tblPeserta.getSelectedRow(), 2).toString());
+        cbHari.setSelectedItem(tblPeserta.getValueAt(tblPeserta.getSelectedRow(), 3).toString());
+        btnSubmit.setEnabled(false);
+        btnDelete.setEnabled(false);
+        btnEdit.setEnabled(true);
     }//GEN-LAST:event_tblPesertaMouseClicked
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        String tes = cbHari.getSelectedItem().toString();
+        String pengajar, waktu;
+        if (tes.equals("Senin")) {
+            pengajar = "Fian";
+            waktu = "12 - 14";
+        } else if (tes.equals("Rabu")) {
+            pengajar = "Cahyo";
+            waktu = "16 - 18";
+        } else {
+            pengajar = "Anggi";
+            waktu = "12 - 14";
+        }
+
+        try {
+            st = cn.createStatement();
+            st.execute("UPDATE user set "
+                    + "Nama='" + txtNama.getText() + "', "
+                    + "Progdi='" + txtProgdi.getText() + "', "
+                    + "Hari='" + cbHari.getSelectedItem() + "', "
+                    + "Waktu='" + waktu + "',"
+                    + "Pengajar='" + pengajar + "'"
+                    + " WHERE "
+                    + "NIM='"+txtNIM.getText()+"'");
+            tampilData("");
+            JOptionPane.showMessageDialog(null, "Update Berhasil");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        reset();
+        btnEdit.setEnabled(false);
+        btnSubmit.setEnabled(true);
+        btnDelete.setEnabled(true);
+    }//GEN-LAST:event_btnEditActionPerformed
 
     /**
      * @param args the command line arguments
