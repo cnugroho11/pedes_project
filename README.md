@@ -1,3 +1,1 @@
-# pedes_project
-
-project ini adalah project anak anak KBM
+Simple java program for KBM project
