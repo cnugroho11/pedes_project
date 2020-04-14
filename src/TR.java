@@ -1,9 +1,5 @@
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -154,6 +150,11 @@ public class TR extends javax.swing.JFrame {
         });
 
         btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
 
         tblPeserta.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -315,7 +316,6 @@ public class TR extends javax.swing.JFrame {
         txtProgdi.setText(tblPeserta.getValueAt(tblPeserta.getSelectedRow(), 2).toString());
         cbHari.setSelectedItem(tblPeserta.getValueAt(tblPeserta.getSelectedRow(), 3).toString());
         btnSubmit.setEnabled(false);
-        btnDelete.setEnabled(false);
         btnEdit.setEnabled(true);
     }//GEN-LAST:event_tblPesertaMouseClicked
 
@@ -344,7 +344,7 @@ public class TR extends javax.swing.JFrame {
                     + " WHERE "
                     + "NIM='"+txtNIM.getText()+"'");
             tampilData("");
-            JOptionPane.showMessageDialog(null, "Update Berhasil");
+            JOptionPane.showMessageDialog(null, "Edit Berhasil");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -353,6 +353,22 @@ public class TR extends javax.swing.JFrame {
         btnSubmit.setEnabled(true);
         btnDelete.setEnabled(true);
     }//GEN-LAST:event_btnEditActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        try {
+            int state;
+            
+            if ((state = JOptionPane.showConfirmDialog(null, "Ingin hapus data?", "Konfirmasi", JOptionPane.YES_NO_OPTION)) == 0){
+                st = cn.createStatement();
+                st.executeUpdate("DELETE FROM user WHERE NIM='"+tabModel.getValueAt(tblPeserta.getSelectedRow(), 1)+"'");
+                tampilData("");
+                reset();
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
     /**
      * @param args the command line arguments
